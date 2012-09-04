@@ -1,7 +1,7 @@
 # CodeAnalyzer
 
 code_analyzer is extracted from [rails_best_practices][0], it helps you
-quickly build your own code analyzer tool.
+easily build your own code analyzer tool.
 
 ## Installation
 
