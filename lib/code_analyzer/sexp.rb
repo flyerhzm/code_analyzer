@@ -22,7 +22,7 @@ class Sexp
       self[1].line
     when :assoclist_from_args, :bare_assoc_hash
       self[1][0].line
-    when :string_add
+    when :string_add, :opassign
       self[2].line
     when :array
       array_values.first.line

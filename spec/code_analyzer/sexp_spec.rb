@@ -13,6 +13,9 @@ describe Sexp do
         def massign
           a, b = 10, 20
         end
+        def opassign(a, b)
+          a+= b
+        end
       end
       EOF
       @node = parse_content(content)
@@ -44,6 +47,10 @@ describe Sexp do
 
     it "should return massign line" do
       @node.grep_node(sexp_type: :massign).line.should == 8
+    end
+
+    it "should return opassign line" do
+      @node.grep_node(sexp_type: :opassign).line.should == 11
     end
   end
 
