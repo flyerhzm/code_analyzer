@@ -17,7 +17,8 @@ class Sexp
     case sexp_type
     when :def, :defs, :command, :command_call, :call, :fcall, :method_add_arg, :method_add_block,
          :var_ref, :vcall, :const_ref, :const_path_ref, :class, :module, :if, :unless, :elsif, :ifop, :binary,
-         :alias, :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal
+         :alias, :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal,
+         :massign
       self[1].line
     when :assoclist_from_args, :bare_assoc_hash
       self[1][0].line
@@ -25,6 +26,8 @@ class Sexp
       self[2].line
     when :array
       array_values.first.line
+    when :mlhs_add
+      self.last.line
     else
       self.last.first if self.last.is_a? Array
     end

@@ -10,6 +10,9 @@ describe Sexp do
         end
         alias :test_new :test
         CONST = { foo: :bar }
+        def massign
+          a, b = 10, 20
+        end
       end
       EOF
       @node = parse_content(content)
@@ -37,6 +40,10 @@ describe Sexp do
 
     it "should return hash line" do
       @node.grep_node(sexp_type: :hash).line.should == 6
+    end
+
+    it "should return massign line" do
+      @node.grep_node(sexp_type: :massign).line.should == 8
     end
   end
 
