@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "ripper"
 require "code_analyzer/version"
 require "code_analyzer/nil"

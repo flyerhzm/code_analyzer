@@ -55,6 +55,7 @@ module CodeAnalyzer
       warnings << Warning.new(filename: filename, line_number: line_number, message: message)
     end
 
+    # all warnings.
     def warnings
       @warnings ||= []
     end
