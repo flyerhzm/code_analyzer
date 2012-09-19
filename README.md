@@ -19,7 +19,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: I will write instructions later.
+<http://flyerhzm.github.com/code_analyzer/>
 
 ## Contributing
 
