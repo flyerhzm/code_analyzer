@@ -33,7 +33,7 @@
 
 <p><a href="https://github.com/flyerhzm/code_analyzer">code_analyzer</a> gem is extracted from
 <a href="https://github.com/railsbp/rails_best_practices">rails_best_practices</a>,
-it's aim to provide a simple way to write a ruby code analyzer tool.</p>
+its aim is to provide a simple way to build your own ruby code analyzer tool.</p>
 
 <h3>Quick Start</h3>
 
@@ -114,7 +114,7 @@ content = File.read(filename)
 checker = ClassMethodChecker.new
 visitor = CodeAnalyzer::CheckingVisitor::Default.new(checkers: [checker])
 visitor.check(filename, content)
-checker.warnings.each { |warning| puts warning }<code></pre>
+visitor.warnings.each { |warning| puts warning }<code></pre>
 
 <p><code>CodeAnalyzer::CheckingVisitor::Default</code> is used to visit all sexp nodes,
 here we register ClassMethodChecker in visitor, and check the <code>test_class.rb</code>,
@@ -124,6 +124,129 @@ then we will see the following output.</p>
 
 <p>Okay, we have finished a simple ruby code analyzer tool.
 You can get the sample code <a href="https://github.com/flyerhzm/test_code_analyzer">here</a>.</p>
+
+<h3>Document</h3>
+
+<h5>Checker</h5>
+
+<p>Checker is responsible for checking ruby code to see if it is good for you.
+Writing a custom checker is easier than you expected, you only need to tell checker what files you want to check,
+what sexp nodes you want to check and how to check them.  That's it, let's see how to do these 3 steps.</p>
+
+<p>1. tell what files you want to check.</p>
+
+<pre><code>class MyChecker < CodeAnalyzer::Checker
+  interesting_files %r|app/models/.*\.rb|, %r|lib/.*\.rb|
+end</code></pre>
+
+<p><code>interesting_files</code> accepts one or more regular expressions,
+the checker only parses files whose filename match any of the given regular expression.
+Here the MyChecker only checks ruby code under app/modes and lib directories.</p>
+
+<p>2. tell what sexp node you want to check.</p>
+
+<pre><code>class MyChecker < CodeAnalyzer::Checker
+  interesting_files %r|app/models/.*\.rb|, %r|lib/.*\.rb|
+  interesting_nodes :def, :defs
+end</code></pre>
+
+<p><code>interesting_nodes</code> accepts one or more sexp types, the checker only cares about the given sexp nodes.
+Here the MyChecker only checks def (instance method definition) and defs (class method definition) nodes.</p>
+
+<p>3. how to check.</p>
+
+<pre><code>class MyChecker < CodeAnalyzer::Checker
+  interesting_files %r|app/models/.*\.rb|, %r|lib/.*\.rb|
+  interesting_nodes :def, :defs
+
+  add_callback :start_def do |node|
+    # this node is a :def node, analyzing it here.
+  end
+
+  add_callback :start_defs do |node|
+    # this node is a defs node, analyzing it here.
+  end
+end</code></pre>
+
+<p><code>add_callback</code> allows you define callbacks before or after visiting a sexp node.
+The first argument is the callback name, like start_def or end_def, the second is a block with sexp node instance,
+in the block, you can analyze the sexp node, like if it violates any code guideline in your team.</p>
+
+<p>There is a special callback, named <code>after_check</code>, which won't be triggered during sexp nodes visit,
+it will be called by CheckingVisitor manually.</p>
+
+<h5>CheckingVisitor</h5>
+
+<p>CheckingVisitor will visit all ruby sexp nodes, triggering the callbacks based on the current sexp node.</p>
+
+<p>1. we should tell CheckingVisitor what checkers we need.</p>
+
+<pre><code>checkers = [MyChecker.new, YourChecker.new]
+visitor = CodeAnalyzer::CheckingVisitor::Default.new(checkers: checkers)</code></pre>
+
+<p>Here CheckingVisitor registers MyChecker and YourChecker's callbacks.</p>
+
+<p>2. visiting all sexp nodes.<p>
+
+<pre><code>filename = "app/models/user.rb"
+visitor.check(filename, File.read(filename))</code></pre>
+
+<p><code>check</code> accepts 2 arguments, one is the filename, the other is file content.
+The reason it needs both filename and file content as arguments is that it allows you do some conversion,
+like ignoring html tags in erb before checking. check method will visit all sexp nodes and
+trigger the registered callbacks.</p>
+
+<p>3. trigger after_check if necessary.</p>
+
+<pre><code>visitor.after_check</code></pre>
+
+<p>it will trigger all after_check callbacks.</p>
+
+<h5>Warning</h5>
+
+<p>Warning wraps warning message, filename and line number, so you can know what code should be refactored after analyzing.</p>
+
+<p>1. add warning during analyzing.</code>
+
+<pre><code>class MyChecker < CodeAnalyzer::Checker
+  ...
+  add_callback :start_def do |node|
+    # analyze it
+    add_warning "it violates blah blah"
+  end
+end</code></pre>
+
+<p><code>add_warning</code> not only records the warning message you assign,
+but also records the current filename and current line number automatically.</p>
+
+<p>2. read warnings after analyzing.</p>
+
+<pre><code>checkers = [MyChecker.new]
+visitor = CodeAnalyzer::CheckingVisitor::Default.new(checkers: checkers)
+visitor.check(filename, File.read(filename))
+visitor.warnings.each { |warning| puts warning }</code></pre>
+
+<p>CheckingVisitor's warnings will return warnings in all registered checkers.</p>
+
+<h5>Sexp</h5>
+
+<p>code_analyzer adds a lot of extensions for sexp, e.g.</p>
+
+<pre><code>Sexp#line # return the line number of current sexp node.
+Sexp#grep_nodes(options) # return all matching sexp nodes.
+Sexp#grep_node(options) # return the first matching sexp node.
+Sexp#class_name # return the class name for class node.
+Sexp#method_name # return the method name for def or defs node.
+Sexp#receiver # return the receiver for call node.
+Sexp#message # return the message for call node
+Sexp#arguments # return the arguments for def or defs node
+...</code></pre>
+
+To get full api list, please check out <a href="http://www.rubydoc.info/github/flyerhzm/code_analyzer/master/frames">here</a>.
+
+<h3>Help</h3>
+
+<p>If you have any questions or suggestions, feel free to <a href="mailto:flyerhzm@gmail.com">contact me</a>
 
       </section>
       <footer>
