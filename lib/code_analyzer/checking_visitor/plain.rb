@@ -1,11 +1,7 @@
 # encoding: utf-8
 module CodeAnalyzer::CheckingVisitor
   # This is the checking visitor to check ruby plain code.
-  class Plain
-    def initialize(options={})
-      @checkers = options[:checkers]
-    end
-
+  class Plain < Base
     # check the ruby plain code.
     #
     # @param [String] filename is the filename of ruby code.
@@ -14,9 +10,6 @@ module CodeAnalyzer::CheckingVisitor
       @checkers.each do |checker|
         checker.check(filename, content)
       end
-    end
-
-    def after_check
     end
   end
 end

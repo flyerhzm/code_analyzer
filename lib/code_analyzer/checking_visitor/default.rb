@@ -1,10 +1,10 @@
 # encoding: utf-8
 module CodeAnalyzer::CheckingVisitor
   # This is the default checking visitor to check ruby sexp nodes.
-  class Default
+  class Default < Base
     def initialize(options={})
+      super
       @checks = {}
-      @checkers = options[:checkers]
       @checkers.each do |checker|
         checker.interesting_nodes.each do |node|
           @checks[node] ||= []
@@ -12,7 +12,7 @@ module CodeAnalyzer::CheckingVisitor
           @checks[node].uniq!
         end
       end
-    end
+   end
 
     # check the ruby sexp nodes for the ruby file.
     #
