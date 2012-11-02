@@ -426,6 +426,11 @@ describe Sexp do
       node.exception_classes.first.to_s.should == "CustomException"
     end
 
+    it "should get empty of empty rescue node" do
+      node = parse_content("def test; rescue; end").grep_node(sexp_type: :rescue)
+      node.exception_classes.first.to_s.should == ""
+    end
+
     it "should get exception classes of rescue node for multiple exceptions" do
       node = parse_content("def test; rescue StandardError, CustomException; end").grep_node(sexp_type: :rescue)
       node.exception_classes.first.to_s.should == "StandardError"
@@ -434,9 +439,14 @@ describe Sexp do
   end
 
   describe "exception_variable" do
-    it "should get exception class of rescue node" do
+    it "should get exception varible of rescue node" do
       node = parse_content("def test; rescue => e; end").grep_node(sexp_type: :rescue)
       node.exception_variable.to_s.should == "e"
+    end
+
+    it "should get empty of empty rescue node" do
+      node = parse_content("def test; rescue; end").grep_node(sexp_type: :rescue)
+      node.exception_variable.to_s.should == ""
     end
   end
 

@@ -540,6 +540,7 @@ class Sexp
   #         => s(s(:var_ref, s(:@const, "CustomException", s(1, 17))))
   def exception_classes
     if :rescue == sexp_type
+      return [] unless self[1]
       if :mrhs_add == self[1].sexp_type
         exceptions = Array.new(self[1][2])
         arg_nodes = self[1][1][1]
