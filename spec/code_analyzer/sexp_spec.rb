@@ -420,6 +420,26 @@ describe Sexp do
     end
   end
 
+  describe "exception_classes" do
+    it "should get exception classes of rescue node" do
+      node = parse_content("def test; rescue CustomException; end").grep_node(sexp_type: :rescue)
+      node.exception_classes.first.to_s.should == "CustomException"
+    end
+
+    it "should get exception classes of rescue node for multiple exceptions" do
+      node = parse_content("def test; rescue StandardError, CustomException; end").grep_node(sexp_type: :rescue)
+      node.exception_classes.first.to_s.should == "StandardError"
+      node.exception_classes.last.to_s.should == "CustomException"
+    end
+  end
+
+  describe "exception_variable" do
+    it "should get exception class of rescue node" do
+      node = parse_content("def test; rescue => e; end").grep_node(sexp_type: :rescue)
+      node.exception_variable.to_s.should == "e"
+    end
+  end
+
   describe "hash_value" do
     it "should get value for hash node" do
       node = parse_content("{first_name: 'Richard', last_name: 'Huang'}").grep_node(sexp_type: :hash)

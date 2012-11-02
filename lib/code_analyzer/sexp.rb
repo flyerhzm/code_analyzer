@@ -525,6 +525,50 @@ class Sexp
     stmts
   end
 
+  # Get expcetion class of rescue node.
+  #
+  #     s(:rescue,
+  #       s(
+  #         s(:var_ref,
+  #           s(:@const, "CustomException", s(1, 17))
+  #         )
+  #       ),
+  #       nil,
+  #       s(:stmts_add, s(:stmts_new), s(:void_stmt)),
+  #       nil
+  #     )
+  #         => s(s(:var_ref, s(:@const, "CustomException", s(1, 17))))
+  def exception_classes
+    if :rescue == sexp_type
+      if :mrhs_add == self[1].sexp_type
+        exceptions = Array.new(self[1][2])
+        arg_nodes = self[1][1][1]
+        while :args_add == arg_nodes.sexp_type
+          exceptions.unshift arg_nodes[2]
+          arg_nodes = arg_nodes[1]
+        end
+        exceptions
+      else
+        self[1]
+      end
+    end
+  end
+
+  # Get exception variable of rescue node.
+  #
+  #     s(:rescue,
+  #       nil,
+  #       s(:var_field, s(:@ident, "e", s(1, 20))),
+  #       s(:stmts_add, s(:stmts_new), s(:void_stmt)),
+  #       nil
+  #     )
+  #         => s(:var_field, s(:@ident, "e", s(1, 20)))
+  def exception_variable
+    if :rescue == sexp_type
+      self[2]
+    end
+  end
+
   # Get hash value node.
   #
   #     s(:hash,
