@@ -1,5 +1,12 @@
 # CodeAnalyzer
 
+| Project  | code_analyzer
+|:---------|:--------------------------------------------
+| Homepage | https://github.com/flyerhzm/code_analyzer
+| Document | http://rubydoc.info/gems/code_analyzer/frames
+| CI       | [![Build Status](https://travis-ci.org/flyerhzm/code_analyzer.png)](https://travis-ci.org/flyerhzm/code_analyzer)
+| Author   | Richard Huang
+
 code_analyzer is extracted from [rails_best_practices][0], it helps you
 easily build your own code analyzer tool.
 
