@@ -5,9 +5,9 @@
 | Homepage | https://github.com/flyerhzm/code_analyzer
 | Document | http://rubydoc.info/gems/code_analyzer/frames
 | CI       | [![Build Status](https://travis-ci.org/flyerhzm/code_analyzer.png)](https://travis-ci.org/flyerhzm/code_analyzer)
-| Author   | Richard Huang
+| Author   | [Richard Huang][0]
 
-code_analyzer is extracted from [rails_best_practices][0], it helps you
+code_analyzer is extracted from [rails_best_practices][1], it helps you
 easily build your own code analyzer tool.
 
 ## Installation
@@ -36,4 +36,5 @@ Or install it yourself as:
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-[0]: https://github.com/railsbp/rails_best_practices
+[0]: http://huangzhimin.com
+[1]: https://github.com/railsbp/rails_best_practices
