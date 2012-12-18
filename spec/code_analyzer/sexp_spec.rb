@@ -16,6 +16,12 @@ describe Sexp do
         def opassign(a, b)
           a+= b
         end
+        def condition
+          if success?
+            puts "unknown" if output?
+          elsif fail?
+          end
+        end
       end
       EOF
       @node = parse_content(content)
@@ -51,6 +57,18 @@ describe Sexp do
 
     it "should return opassign line" do
       @node.grep_node(sexp_type: :opassign).line.should == 11
+    end
+
+    it "should return if line" do
+      expect(@node.grep_node(sexp_type: :if).line).to eq 14
+    end
+
+    it "should return elsif line" do
+      expect(@node.grep_node(sexp_type: :elsif).line).to eq 16
+    end
+
+    it "should return if_mod line" do
+      expect(@node.grep_node(sexp_type: :if_mod).line).to eq 15
     end
   end
 
@@ -313,30 +331,32 @@ describe Sexp do
   describe "conditional_statement" do
     it "should get conditional statement of if" do
       node = parse_content("if true; end").grep_node(sexp_type: :if)
-      node.conditional_statement.to_s.should == "true"
+      expect(node.conditional_statement.to_s).to eq "true"
     end
 
     it "should get conditional statement of unless" do
-      node = parse_content("unless true; end").grep_node(sexp_type: :unless)
-      node.conditional_statement.to_s.should == "true"
+      node = parse_content("unless false; end").grep_node(sexp_type: :unless)
+      expect(node.conditional_statement.to_s).to eq "false"
     end
 
     it "should get conditional statement of elsif" do
-      content =<<-EOF
-      if true
-      elsif false
-      end
-      EOF
-      node = parse_content(content).grep_node(sexp_type: :elsif)
-      node.conditional_statement.to_s.should == "false"
+      node = parse_content("if true; elsif false; end").grep_node(sexp_type: :elsif)
+      expect(node.conditional_statement.to_s).to eq "false"
+    end
+
+    it "should get conditional statement of if_mod" do
+      node = parse_content("'OK' if true").grep_node(sexp_type: :if_mod)
+      expect(node.conditional_statement.to_s).to eq "true"
+    end
+
+    it "should get conditional statement of unless_mod" do
+      node = parse_content("'OK' unless false").grep_node(sexp_type: :unless_mod)
+      expect(node.conditional_statement.to_s).to eq "false"
     end
 
     it "should get conditional statement of ifop" do
-      content =<<-EOF
-      user ? user.name : nil
-      EOF
-      node = parse_content(content).grep_node(sexp_type: :ifop)
-      node.conditional_statement.to_s.should == "user"
+      node = parse_content("true ? 'OK' : 'NO'").grep_node(sexp_type: :ifop)
+      expect(node.conditional_statement.to_s).to eq "true"
     end
   end
 
@@ -381,23 +401,38 @@ describe Sexp do
     end
 
     it "should get body of if" do
-      node = parse_content("if true; puts 'hello world'; end").grep_node(sexp_type: :if)
-      node.body.sexp_type.should == :stmts_add
+      node = parse_content("if true; 'OK'; end").grep_node(sexp_type: :if)
+      expect(node.body.sexp_type).to eq :stmts_add
     end
 
     it "should get body of elsif" do
-      node = parse_content("if true; elsif true; puts 'hello world'; end").grep_node(sexp_type: :elsif)
-      node.body.sexp_type.should == :stmts_add
+      node = parse_content("if true; elsif true; 'OK'; end").grep_node(sexp_type: :elsif)
+      expect(node.body.sexp_type).to eq :stmts_add
     end
 
     it "should get body of unless" do
-      node = parse_content("unless true; puts 'hello world'; end").grep_node(sexp_type: :unless)
-      node.body.sexp_type.should == :stmts_add
+      node = parse_content("unless true; 'OK'; end").grep_node(sexp_type: :unless)
+      expect(node.body.sexp_type).to eq :stmts_add
     end
 
     it "should get body of else" do
-      node = parse_content("if true; else; puts 'hello world'; end").grep_node(sexp_type: :else)
-      node.body.sexp_type.should == :stmts_add
+      node = parse_content("if true; else; 'OK'; end").grep_node(sexp_type: :else)
+      expect(node.body.sexp_type).to eq :stmts_add
+    end
+
+    it "should get body of if_mod" do
+      node = parse_content("'OK' if true").grep_node(sexp_type: :if_mod)
+      expect(node.body.to_s).to eq "OK"
+    end
+
+    it "should get body of unless_mod" do
+      node = parse_content("'OK' unless false").grep_node(sexp_type: :unless_mod)
+      expect(node.body.to_s).to eq "OK"
+    end
+
+    it "should get body of if_op" do
+      node = parse_content("true ? 'OK' : 'NO'").grep_node(sexp_type: :ifop)
+      expect(node.body.to_s).to eq "OK"
     end
   end
 

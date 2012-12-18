@@ -16,7 +16,8 @@ class Sexp
   def line
     case sexp_type
     when :def, :defs, :command, :command_call, :call, :fcall, :method_add_arg, :method_add_block,
-         :var_ref, :vcall, :const_ref, :const_path_ref, :class, :module, :if, :unless, :elsif, :ifop, :binary,
+         :var_ref, :vcall, :const_ref, :const_path_ref, :class, :module,
+         :if, :unless, :elsif, :ifop, :if_mod, :unless_mod, :binary,
          :alias, :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal,
          :massign
       self[1].line
@@ -329,7 +330,7 @@ class Sexp
   #
   # @return [Sexp] conditional statement of if node
   def conditional_statement
-    if [:if, :unless, :elsif, :ifop].include? sexp_type
+    if [:if, :unless, :elsif, :ifop, :if_mod, :unless_mod].include? sexp_type
       self[1]
     end
   end
@@ -431,7 +432,7 @@ class Sexp
     case sexp_type
     when :else
       self[1]
-    when :module, :if, :elsif, :unless
+    when :module, :if, :elsif, :unless, :if_mod, :unless_mod, :ifop
       self[2]
     when :class, :def
       self[3]
