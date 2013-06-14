@@ -52,18 +52,14 @@ module CodeAnalyzer::CheckingVisitor
     def check_node(node)
       checkers = @checks[node.sexp_type]
       if checkers
-        checkers.each { |checker|
-          checker.node_start(node) if checker.parse_file?(node.file)
-        }
+        checkers.each { |checker| checker.node_start(node) if checker.parse_file?(node.file) }
       end
       node.children.each { |child_node|
         child_node.file = node.file
         child_node.check(self)
       }
       if checkers
-        checkers.each { |checker|
-          checker.node_end(node) if checker.parse_file?(node.file)
-        }
+        checkers.each { |checker| checker.node_end(node) if checker.parse_file?(node.file) }
       end
     end
   end

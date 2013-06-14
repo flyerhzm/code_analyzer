@@ -8,7 +8,7 @@ module CodeAnalyzer::CheckingVisitor
     # @param [String] content is the content of ruby file.
     def check(filename, content)
       @checkers.each do |checker|
-        checker.check(filename, content)
+        checker.check(filename, content) if checker.parse_file?(filename)
       end
     end
   end

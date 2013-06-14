@@ -9,7 +9,9 @@ module CodeAnalyzer::CheckingVisitor
     it "should check by all checkers" do
       filename = "filename"
       content = "content"
-      checker1.should_receive(:check).with(filename, content)
+      checker1.should_receive(:parse_file?).and_return(false)
+      checker2.should_receive(:parse_file?).and_return(true)
+      checker1.should_not_receive(:check).with(filename, content)
       checker2.should_receive(:check).with(filename, content)
 
       visitor.check(filename, content)
