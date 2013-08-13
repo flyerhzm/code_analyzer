@@ -28,47 +28,47 @@ describe Sexp do
     end
 
     it "should return class line" do
-      @node.grep_node(sexp_type: :class).line.should == 1
+      @node.grep_node(sexp_type: :class).line_number.should == 1
     end
 
     it "should return def line" do
-      @node.grep_node(sexp_type: :def).line.should == 2
+      @node.grep_node(sexp_type: :def).line_number.should == 2
     end
 
     it "should return const line" do
-      @node.grep_node(sexp_type: :const_ref).line.should == 1
+      @node.grep_node(sexp_type: :const_ref).line_number.should == 1
     end
 
     it "should return const path line" do
-      @node.grep_node(sexp_type: :const_path_ref).line.should == 3
+      @node.grep_node(sexp_type: :const_path_ref).line_number.should == 3
     end
 
     it "should return alias line" do
-      @node.grep_node(sexp_type: :alias).line.should == 5
+      @node.grep_node(sexp_type: :alias).line_number.should == 5
     end
 
     it "should return hash line" do
-      @node.grep_node(sexp_type: :hash).line.should == 6
+      @node.grep_node(sexp_type: :hash).line_number.should == 6
     end
 
     it "should return massign line" do
-      @node.grep_node(sexp_type: :massign).line.should == 8
+      @node.grep_node(sexp_type: :massign).line_number.should == 8
     end
 
     it "should return opassign line" do
-      @node.grep_node(sexp_type: :opassign).line.should == 11
+      @node.grep_node(sexp_type: :opassign).line_number.should == 11
     end
 
     it "should return if line" do
-      expect(@node.grep_node(sexp_type: :if).line).to eq 14
+      expect(@node.grep_node(sexp_type: :if).line_number).to eq 14
     end
 
     it "should return elsif line" do
-      expect(@node.grep_node(sexp_type: :elsif).line).to eq 16
+      expect(@node.grep_node(sexp_type: :elsif).line_number).to eq 16
     end
 
     it "should return if_mod line" do
-      expect(@node.grep_node(sexp_type: :if_mod).line).to eq 15
+      expect(@node.grep_node(sexp_type: :if_mod).line_number).to eq 15
     end
   end
 
