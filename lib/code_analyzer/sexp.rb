@@ -465,7 +465,7 @@ class Sexp
   #            )
   #
   # @return [Sexp] body node
-  def block
+  def block_node
     case sexp_type
     when :method_add_block
       self[2]
@@ -872,7 +872,7 @@ class Sexp
 
   # if the return value of these methods is nil, then return CodeAnalyzer::Nil.new instead
   [:sexp_type, :receiver, :message, :arguments, :argument, :class_name, :base_class, :method_name,
-   :body, :block, :conditional_statement, :left_value, :right_value].each do |method|
+   :body, :block_node, :conditional_statement, :left_value, :right_value].each do |method|
     class_eval <<-EOS
       alias_method :origin_#{method}, :#{method}
 

@@ -439,7 +439,7 @@ describe Sexp do
   describe "block" do
     it "sould get block of method_add_block node" do
       node = parse_content("resources :posts do; resources :comments; end").grep_node(sexp_type: :method_add_block)
-      node.block.sexp_type.should == :do_block
+      node.block_node.sexp_type.should == :do_block
     end
   end
 
