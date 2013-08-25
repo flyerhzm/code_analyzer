@@ -558,8 +558,13 @@ describe Sexp do
       node.array_values.should == []
     end
 
-    it "should get array value with qwords" do
-      node = parse_content("%w(first_name last_name)").grep_node(sexp_type: :qwords_add)
+    it "should get array value with array and words_add" do
+      node = parse_content("%W{day week fortnight}").grep_node(sexp_type: :array)
+      node.array_values.map(&:to_s).should == ["day", "week", "fortnight"]
+    end
+
+    it "should get array value with array and qwords_add" do
+      node = parse_content("%w(first_name last_name)").grep_node(sexp_type: :array)
       node.array_values.map(&:to_s).should == ["first_name", "last_name"]
     end
   end

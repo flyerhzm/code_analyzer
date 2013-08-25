@@ -735,15 +735,30 @@ class Sexp
   #
   # @return [Array] array values
   def array_values
-    if :array == sexp_type
+    case sexp_type
+    when :array
       if nil == self[1]
         []
+      elsif :words_add == self[1].sexp_type
+        self[1].array_values
       elsif :qwords_add == self[1].sexp_type
         self[1].array_values
       else
         arguments.all
       end
-    elsif :qwords_add
+    when :words_add
+      values = []
+      node = self
+      while true
+        if :words_add == node.sexp_type
+          values.unshift node[2]
+          node = node[1]
+        elsif :words_new == node.sexp_type
+          break
+        end
+      end
+      values
+    when :qwords_add
       values = []
       node = self
       while true
@@ -755,6 +770,8 @@ class Sexp
         end
       end
       values
+    else
+      []
     end
   end
 
@@ -822,11 +839,9 @@ class Sexp
         self[1].to_s
       end
     when :qwords_add
-      if s(:qwords_new) == self[1]
-        self[2].to_s
-      else
-        self[1].to_s
-      end
+      self[2].to_s
+    when :word_add
+      self[2].to_s
     when :const_path_ref
       "#{self[1]}::#{self[2]}"
     when :@label
