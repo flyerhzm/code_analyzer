@@ -568,9 +568,11 @@ describe Sexp do
       node.array_values.map(&:to_s).should == ["first_name", "last_name"]
     end
 
-    it "should get array value with array and qsymbols_add" do
-      node = parse_content("%i(first_name last_name)").grep_node(sexp_type: :array)
-      node.array_values.map(&:to_s).should == ["first_name", "last_name"]
+    if RUBY_VERSION.to_i > 1
+      it "should get array value with array and qsymbols_add" do
+        node = parse_content("%i(first_name last_name)").grep_node(sexp_type: :array)
+        node.array_values.map(&:to_s).should == ["first_name", "last_name"]
+      end
     end
   end
 
