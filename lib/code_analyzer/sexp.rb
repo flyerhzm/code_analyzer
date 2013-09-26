@@ -739,33 +739,19 @@ class Sexp
     when :array
       if nil == self[1]
         []
-      elsif :words_add == self[1].sexp_type
-        self[1].array_values
-      elsif :qwords_add == self[1].sexp_type
+      elsif [:words_add, :qwords_add, :qsymbols_add].include? self[1].sexp_type
         self[1].array_values
       else
         arguments.all
       end
-    when :words_add
+    when :words_add, :qwords_add, :qsymbols_add
       values = []
       node = self
       while true
-        if :words_add == node.sexp_type
+        if [:words_add, :qwords_add, :qsymbols_add].include? node.sexp_type
           values.unshift node[2]
           node = node[1]
-        elsif :words_new == node.sexp_type
-          break
-        end
-      end
-      values
-    when :qwords_add
-      values = []
-      node = self
-      while true
-        if :qwords_add == node.sexp_type
-          values.unshift node[2]
-          node = node[1]
-        elsif :qwords_new == node.sexp_type
+        elsif [:words_new, :qwords_new, :qsymbols_new].include? node.sexp_type
           break
         end
       end
