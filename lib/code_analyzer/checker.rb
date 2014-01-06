@@ -51,7 +51,7 @@ module CodeAnalyzer
     # @param [String] message, is the warning message
     # @param [String] filename, is the filename of source code
     # @param [Integer] line_number, is the line number of the source code which is reviewing
-    def add_warning(message, filename = @node.file, line_number = @node.line)
+    def add_warning(message, filename = @node.file, line_number = @node.line_number)
       warnings << Warning.new(filename: filename, line_number: line_number, message: message)
     end
 
