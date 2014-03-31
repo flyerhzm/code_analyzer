@@ -836,6 +836,8 @@ class Sexp
       "#{self[1]}[#{self[2]}]"
     when :call, :field
       "#{self.receiver}.#{self.message}"
+    when :top_const_ref
+      "::#{self[1]}"
     else
       ""
     end

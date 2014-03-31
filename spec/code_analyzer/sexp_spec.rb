@@ -668,6 +668,11 @@ describe Sexp do
       node = parse_content("current_user.post").grep_node(sexp_type: :call)
       node.to_s.should == "current_user.post"
     end
+
+    it "should get to_s for top_const_ref" do
+      node = parse_content("::User").grep_node(sexp_type: :top_const_ref)
+      node.to_s.should == "::User"
+    end
   end
 
   describe "const?" do
