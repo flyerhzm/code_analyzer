@@ -11,7 +11,7 @@ module CodeAnalyzer::CheckingVisitor
       content = "content"
       expect(checker1).to receive(:parse_file?).and_return(false)
       expect(checker2).to receive(:parse_file?).and_return(true)
-      checker1.should_not_receive(:check).with(filename, content)
+      expect(checker1).not_to receive(:check).with(filename, content)
       expect(checker2).to receive(:check).with(filename, content)
 
       visitor.check(filename, content)
