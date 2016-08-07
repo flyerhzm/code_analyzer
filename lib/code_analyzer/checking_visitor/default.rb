@@ -12,7 +12,7 @@ module CodeAnalyzer::CheckingVisitor
           @checks[node].uniq!
         end
       end
-   end
+    end
 
     # check the ruby sexp nodes for the ruby file.
     #
