@@ -56,7 +56,7 @@ module CodeAnalyzer::CheckingVisitor
       end
       node.children.each { |child_node|
         child_node.file = node.file
-        child_node.check(self)
+        check_node(child_node)
       }
       if checkers
         checkers.each { |checker| checker.node_end(node) if checker.parse_file?(node.file) }
