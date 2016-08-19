@@ -563,15 +563,30 @@ describe Sexp do
       expect(node.array_values.map(&:to_s)).to eq ["day", "week", "fortnight"]
     end
 
+    it "should get empty array values with array and words_add" do
+      node = parse_content("%W{}").grep_node(sexp_type: :array)
+      expect(node.array_values.map(&:to_s)).to eq []
+    end
+
     it "should get array value with array and qwords_add" do
       node = parse_content("%w(first_name last_name)").grep_node(sexp_type: :array)
       expect(node.array_values.map(&:to_s)).to eq ["first_name", "last_name"]
+    end
+
+    it "should get empty array values with array and qwords_add" do
+      node = parse_content("%w()").grep_node(sexp_type: :array)
+      expect(node.array_values.map(&:to_s)).to eq []
     end
 
     if RUBY_VERSION.to_i > 1
       it "should get array value with array and qsymbols_add" do
         node = parse_content("%i(first_name last_name)").grep_node(sexp_type: :array)
         expect(node.array_values.map(&:to_s)).to eq ["first_name", "last_name"]
+      end
+
+      it "should get empty array values with array and qsymbols_new" do
+        node = parse_content("%i()").grep_node(sexp_type: :array)
+        expect(node.array_values.map(&:to_s)).to eq []
       end
     end
   end

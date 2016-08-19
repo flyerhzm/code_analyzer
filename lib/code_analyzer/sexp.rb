@@ -737,7 +737,7 @@ class Sexp
   def array_values
     case sexp_type
     when :array
-      if nil == self[1]
+      if nil == self[1] || [:words_new, :qwords_new, :qsymbols_new].include?(self[1].sexp_type)
         []
       elsif [:words_add, :qwords_add, :qsymbols_add].include? self[1].sexp_type
         self[1].array_values
