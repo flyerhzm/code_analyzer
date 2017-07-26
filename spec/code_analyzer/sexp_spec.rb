@@ -579,6 +579,16 @@ describe Sexp do
     end
 
     if RUBY_VERSION.to_i > 1
+      it "should get array value with array and symbols_add" do
+        node = parse_content("%I(first_name last_name)").grep_node(sexp_type: :array)
+        expect(node.array_values.map(&:to_s)).to eq ["first_name", "last_name"]
+      end
+
+      it "should get empty array value with array and symbols_add" do
+        node = parse_content("%I()").grep_node(sexp_type: :array)
+        expect(node.array_values.map(&:to_s)).to eq []
+      end
+
       it "should get array value with array and qsymbols_add" do
         node = parse_content("%i(first_name last_name)").grep_node(sexp_type: :array)
         expect(node.array_values.map(&:to_s)).to eq ["first_name", "last_name"]
