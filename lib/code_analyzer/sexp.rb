@@ -737,21 +737,21 @@ class Sexp
   def array_values
     case sexp_type
     when :array
-      if nil == self[1] || [:words_new, :qwords_new, :qsymbols_new].include?(self[1].sexp_type)
+      if nil == self[1] || [:words_new, :qwords_new, :symbols_new, :qsymbols_new].include?(self[1].sexp_type)
         []
-      elsif [:words_add, :qwords_add, :qsymbols_add].include? self[1].sexp_type
+      elsif [:words_add, :qwords_add, :symbols_add, :qsymbols_add].include? self[1].sexp_type
         self[1].array_values
       else
         arguments.all
       end
-    when :words_add, :qwords_add, :qsymbols_add
+    when :words_add, :qwords_add, :symbols_add, :qsymbols_add
       values = []
       node = self
       while true
-        if [:words_add, :qwords_add, :qsymbols_add].include? node.sexp_type
+        if [:words_add, :qwords_add, :symbols_add, :qsymbols_add].include? node.sexp_type
           values.unshift node[2]
           node = node[1]
-        elsif [:words_new, :qwords_new, :qsymbols_new].include? node.sexp_type
+        elsif [:words_new, :qwords_new, :symbols_new, :qsymbols_new].include? node.sexp_type
           break
         end
       end
