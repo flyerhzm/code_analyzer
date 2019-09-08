@@ -6,7 +6,7 @@ module CodeAnalyzer
   class Warning
     attr_reader :filename, :line_number, :message
 
-    def initialize(options={})
+    def initialize(options = {})
       @filename = options[:filename]
       @line_number = options[:line_number].to_s
       @message = options[:message]

@@ -2,7 +2,7 @@
 module CodeAnalyzer::CheckingVisitor
   # Base class for checking visitor.
   class Base
-    def initialize(options={})
+    def initialize(options = {})
       @checkers = options[:checkers]
     end
 

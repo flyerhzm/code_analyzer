@@ -2,7 +2,7 @@
 module CodeAnalyzer::CheckingVisitor
   # This is the default checking visitor to check ruby sexp nodes.
   class Default < Base
-    def initialize(options={})
+    def initialize(options = {})
       super
       @checks = {}
       @checkers.each do |checker|
@@ -28,9 +28,7 @@ module CodeAnalyzer::CheckingVisitor
     def after_check
       @checkers.each do |checker|
         after_check_callbacks = checker.class.get_callbacks(:after_check)
-        after_check_callbacks.each do |block|
-          checker.instance_exec &block
-        end
+        after_check_callbacks.each { |block| checker.instance_exec &block }
       end
     end
 
@@ -41,7 +39,9 @@ module CodeAnalyzer::CheckingVisitor
     def parse(filename, content)
       Sexp.from_array(Ripper::SexpBuilder.new(content).parse)
     rescue Exception
-      raise AnalyzerException.new("#{filename} looks like it's not a valid Ruby file.  Skipping...")
+      raise AnalyzerException.new(
+              "#{filename} looks like it's not a valid Ruby file.  Skipping..."
+            )
     end
 
     # recursively check ruby sexp node.
@@ -52,14 +52,18 @@ module CodeAnalyzer::CheckingVisitor
     def check_node(node)
       checkers = @checks[node.sexp_type]
       if checkers
-        checkers.each { |checker| checker.node_start(node) if checker.parse_file?(node.file) }
+        checkers.each do |checker|
+          checker.node_start(node) if checker.parse_file?(node.file)
+        end
       end
-      node.children.each { |child_node|
+      node.children.each do |child_node|
         child_node.file = node.file
         check_node(child_node)
-      }
+      end
       if checkers
-        checkers.each { |checker| checker.node_end(node) if checker.parse_file?(node.file) }
+        checkers.each do |checker|
+          checker.node_end(node) if checker.parse_file?(node.file)
+        end
       end
     end
   end
