@@ -92,7 +92,7 @@ describe Sexp do
              s(
                :call,
                s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-               :".",
+               s(:@period, ".", s(2, 20)),
                s(:@ident, 'posts', s(2, 21))
              )
            ]
@@ -101,7 +101,7 @@ describe Sexp do
              s(
                :call,
                s(:vcall, s(:@ident, 'current_user', s(2, 8))),
-               :".",
+               s(:@period, ".", s(2, 20)),
                s(:@ident, 'posts', s(2, 21))
              )
            ]
@@ -120,16 +120,16 @@ describe Sexp do
                s(
                  :call,
                  s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-                 :".",
+                 s(:@period, ".", s(2, 20)),
                  s(:@ident, 'posts', s(2, 21))
                ),
-               :".",
+               s(:@period, ".", s(2, 26)),
                s(:@ident, 'find', s(2, 27))
              ),
              s(
                :call,
                s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-               :".",
+               s(:@period, ".", s(2, 20)),
                s(:@ident, 'posts', s(2, 21))
              )
            ]
@@ -140,16 +140,16 @@ describe Sexp do
                s(
                  :call,
                  s(:vcall, s(:@ident, 'current_user', s(2, 8))),
-                 :".",
+                 s(:@period, ".", s(2, 20)),
                  s(:@ident, 'posts', s(2, 21))
                ),
-               :".",
+               s(:@period, ".", s(2, 26)),
                s(:@ident, 'find', s(2, 27))
              ),
              s(
                :call,
                s(:vcall, s(:@ident, 'current_user', s(2, 8))),
-               :".",
+               s(:@period, ".", s(2, 20)),
                s(:@ident, 'posts', s(2, 21))
              )
            ]
@@ -191,14 +191,14 @@ describe Sexp do
         expect(node).to eq s(
              :call,
              s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-             :".",
+             s(:@period, ".", s(2, 20)),
              s(:@ident, 'posts', s(2, 21))
            )
       else
         expect(node).to eq s(
              :call,
              s(:vcall, s(:@ident, 'current_user', s(2, 8))),
-             :".",
+             s(:@period, ".", s(2, 20)),
              s(:@ident, 'posts', s(2, 21))
            )
       end
@@ -438,7 +438,7 @@ describe Sexp do
              s(
                :command_call,
                s(:var_ref, s(:@const, 'Account', s(1, 19))),
-               :".",
+               s(:@period, ".", s(1, 26)),
                s(:@ident, 'get_business', s(1, 27)),
                s(
                  :args_add_block,
