@@ -87,25 +87,14 @@ describe Sexp do
       @node.grep_nodes(sexp_type: :call, receiver: 'current_user') do |node|
         nodes << node
       end
-      if RUBY_VERSION == '1.9.2'
-        expect(nodes).to eq [
-             s(
-               :call,
-               s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-               s(:@period, ".", s(2, 20)),
-               s(:@ident, 'posts', s(2, 21))
-             )
-           ]
-      else
-        expect(nodes).to eq [
-             s(
-               :call,
-               s(:vcall, s(:@ident, 'current_user', s(2, 8))),
-               s(:@period, ".", s(2, 20)),
-               s(:@ident, 'posts', s(2, 21))
-             )
-           ]
-      end
+      expect(nodes).to eq [
+           s(
+             :call,
+             s(:vcall, s(:@ident, 'current_user', s(2, 8))),
+             s(:@period, ".", s(2, 20)),
+             s(:@ident, 'posts', s(2, 21))
+           )
+         ]
     end
 
     it 'should get the call nodes with different messages' do
@@ -113,65 +102,33 @@ describe Sexp do
       @node.grep_nodes(sexp_type: :call, message: %w[posts find]) do |node|
         nodes << node
       end
-      if RUBY_VERSION == '1.9.2'
-        expect(nodes).to eq [
-             s(
-               :call,
-               s(
-                 :call,
-                 s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-                 s(:@period, ".", s(2, 20)),
-                 s(:@ident, 'posts', s(2, 21))
-               ),
-               s(:@period, ".", s(2, 26)),
-               s(:@ident, 'find', s(2, 27))
-             ),
-             s(
-               :call,
-               s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-               s(:@period, ".", s(2, 20)),
-               s(:@ident, 'posts', s(2, 21))
-             )
-           ]
-      else
-        expect(nodes).to eq [
-             s(
-               :call,
-               s(
-                 :call,
-                 s(:vcall, s(:@ident, 'current_user', s(2, 8))),
-                 s(:@period, ".", s(2, 20)),
-                 s(:@ident, 'posts', s(2, 21))
-               ),
-               s(:@period, ".", s(2, 26)),
-               s(:@ident, 'find', s(2, 27))
-             ),
+      expect(nodes).to eq [
+           s(
+             :call,
              s(
                :call,
                s(:vcall, s(:@ident, 'current_user', s(2, 8))),
                s(:@period, ".", s(2, 20)),
                s(:@ident, 'posts', s(2, 21))
-             )
-           ]
-      end
+             ),
+             s(:@period, ".", s(2, 26)),
+             s(:@ident, 'find', s(2, 27))
+           ),
+           s(
+             :call,
+             s(:vcall, s(:@ident, 'current_user', s(2, 8))),
+             s(:@period, ".", s(2, 20)),
+             s(:@ident, 'posts', s(2, 21))
+           )
+         ]
     end
 
-    if RUBY_VERSION == '1.9.2'
-      it 'should get the var_ref node with to_s' do
-        nodes = []
-        @node.grep_nodes(sexp_type: :var_ref, to_s: 'current_user') do |node|
-          nodes << node
-        end
-        expect(nodes).to eq [s(:var_ref, s(:@ident, 'current_user', s(2, 8)))]
+    it 'should get the vcall node with to_s' do
+      nodes = []
+      @node.grep_nodes(sexp_type: :vcall, to_s: 'current_user') do |node|
+        nodes << node
       end
-    else
-      it 'should get the vcall node with to_s' do
-        nodes = []
-        @node.grep_nodes(sexp_type: :vcall, to_s: 'current_user') do |node|
-          nodes << node
-        end
-        expect(nodes).to eq [s(:vcall, s(:@ident, 'current_user', s(2, 8)))]
-      end
+      expect(nodes).to eq [s(:vcall, s(:@ident, 'current_user', s(2, 8)))]
     end
   end
 
@@ -187,21 +144,12 @@ describe Sexp do
 
     it 'should get first node with empty argument' do
       node = @node.grep_node(sexp_type: :call, receiver: 'current_user')
-      if RUBY_VERSION == '1.9.2'
-        expect(node).to eq s(
-             :call,
-             s(:var_ref, s(:@ident, 'current_user', s(2, 8))),
-             s(:@period, ".", s(2, 20)),
-             s(:@ident, 'posts', s(2, 21))
-           )
-      else
-        expect(node).to eq s(
-             :call,
-             s(:vcall, s(:@ident, 'current_user', s(2, 8))),
-             s(:@period, ".", s(2, 20)),
-             s(:@ident, 'posts', s(2, 21))
-           )
-      end
+      expect(node).to eq s(
+           :call,
+           s(:vcall, s(:@ident, 'current_user', s(2, 8))),
+           s(:@period, ".", s(2, 20)),
+           s(:@ident, 'posts', s(2, 21))
+         )
     end
   end
 
@@ -415,43 +363,23 @@ describe Sexp do
       node =
         parse_content('options_for_select(Account.get_business current_user)')
           .grep_node(sexp_type: :args_add)
-      if RUBY_VERSION == '1.9.2'
-        expect(node.all).to eq [
+      expect(node.all).to eq [
+           s(
+             :command_call,
+             s(:var_ref, s(:@const, 'Account', s(1, 19))),
+             s(:@period, ".", s(1, 26)),
+             s(:@ident, 'get_business', s(1, 27)),
              s(
-               :command_call,
-               s(:var_ref, s(:@const, 'Account', s(1, 19))),
-               :".",
-               s(:@ident, 'get_business', s(1, 27)),
+               :args_add_block,
                s(
-                 :args_add_block,
-                 s(
-                   :args_add,
-                   s(:args_new),
-                   s(:var_ref, s(:@ident, 'current_user', s(1, 40)))
-                 ),
-                 false
-               )
+                 :args_add,
+                 s(:args_new),
+                 s(:vcall, s(:@ident, 'current_user', s(1, 40)))
+               ),
+               false
              )
-           ]
-      else
-        expect(node.all).to eq [
-             s(
-               :command_call,
-               s(:var_ref, s(:@const, 'Account', s(1, 19))),
-               s(:@period, ".", s(1, 26)),
-               s(:@ident, 'get_business', s(1, 27)),
-               s(
-                 :args_add_block,
-                 s(
-                   :args_add,
-                   s(:args_new),
-                   s(:vcall, s(:@ident, 'current_user', s(1, 40)))
-                 ),
-                 false
-               )
-             )
-           ]
-      end
+           )
+         ]
     end
 
     it 'no error for args_add_star' do
