@@ -813,6 +813,11 @@ describe Sexp do
       expect(node.to_s).to eq '@user'
     end
 
+    it 'should get to_s for period' do
+      node = parse_content('@user.name').grep_node(sexp_type: :@period)
+      expect(node.to_s).to eq '.'
+    end
+
     it 'should get to_s for class with module' do
       node =
         parse_content('ActiveRecord::Base').grep_node(

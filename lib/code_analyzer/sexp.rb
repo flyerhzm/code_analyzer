@@ -844,7 +844,7 @@ class Sexp
     case sexp_type
     when :string_literal, :xstring_literal, :string_content, :const_ref,
          :symbol_literal, :symbol, :args_add_block, :var_ref, :vcall, :var_field,
-         :@ident, :@tstring_content, :@const, :@ivar, :@kw, :@gvar, :@cvar
+         :@ident, :@tstring_content, :@const, :@ivar, :@kw, :@gvar, :@cvar, :@period
       self[1].to_s
     when :string_add
       s(:string_content) == self[1] ? self[2].to_s : self[1].to_s
