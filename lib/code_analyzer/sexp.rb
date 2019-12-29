@@ -571,6 +571,7 @@ class Sexp
   def exception_classes
     if :rescue == sexp_type
       return [] unless self[1]
+
       if :mrhs_add == self[1].sexp_type
         exceptions = Array.new(self[1][2])
         arg_nodes = self[1][1][1]
