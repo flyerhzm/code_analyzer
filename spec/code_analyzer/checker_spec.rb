@@ -28,16 +28,12 @@ module CodeAnalyzer
 
     context '#parse_file?' do
       it 'should return true if node_file matches pattern' do
-        allow(checker).to receive(:interesting_files).and_return(
-          [%r{spec\/.*\.rb}, %r{lib\/.*\.rb}]
-        )
+        allow(checker).to receive(:interesting_files).and_return([%r{spec\/.*\.rb}, %r{lib\/.*\.rb}])
         expect(checker.parse_file?('lib/code_analyzer.rb')).to be true
       end
 
       it "should return false if node_file doesn't match pattern" do
-        allow(checker).to receive(:interesting_files).and_return(
-          [%r{spec\/.*\.rb}]
-        )
+        allow(checker).to receive(:interesting_files).and_return([%r{spec\/.*\.rb}])
         expect(checker.parse_file?('lib/code_analyzer.rb')).to be false
       end
     end

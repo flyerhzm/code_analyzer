@@ -28,8 +28,7 @@ module CodeAnalyzer
     # @param [Sexp] node
     def node_start(node)
       @node = node
-      self.class.get_callbacks("start_#{node.sexp_type}".to_sym)
-        .each { |block| self.instance_exec(node, &block) }
+      self.class.get_callbacks("start_#{node.sexp_type}".to_sym).each { |block| self.instance_exec(node, &block) }
     end
 
     # delegate to end_### according to the sexp_type, like
@@ -40,9 +39,7 @@ module CodeAnalyzer
     # @param [Sexp] node
     def node_end(node)
       @node = node
-      self.class.get_callbacks("end_#{node.sexp_type}".to_sym).each do |block|
-        self.instance_exec(node, &block)
-      end
+      self.class.get_callbacks("end_#{node.sexp_type}".to_sym).each { |block| self.instance_exec(node, &block) }
     end
 
     # add an warning.
@@ -50,13 +47,8 @@ module CodeAnalyzer
     # @param [String] message, is the warning message
     # @param [String] filename, is the filename of source code
     # @param [Integer] line_number, is the line number of the source code which is reviewing
-    def add_warning(
-      message, filename = @node.file, line_number = @node.line_number
-    )
-      warnings <<
-        Warning.new(
-          filename: filename, line_number: line_number, message: message
-        )
+    def add_warning(message, filename = @node.file, line_number = @node.line_number)
+      warnings << Warning.new(filename: filename, line_number: line_number, message: message)
     end
 
     # all warnings.

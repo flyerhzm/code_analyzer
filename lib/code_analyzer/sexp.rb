@@ -13,12 +13,12 @@ class Sexp
   #
   #     s(:@ident, "test", s(2, 12)
   #       => 2
+
   def line_number
     case sexp_type
-    when :def, :defs, :command, :command_call, :call, :fcall, :method_add_arg, :method_add_block,
-         :var_ref, :vcall, :const_ref, :const_path_ref, :class, :module, :if, :unless,
-         :elsif, :ifop, :if_mod, :unless_mod, :binary, :alias, :symbol_literal, :symbol,
-         :aref, :hash, :assoc_new, :string_literal, :massign, :var_field
+    when :def, :defs, :command, :command_call, :call, :fcall, :method_add_arg, :method_add_block, :var_ref, :vcall,
+         :const_ref, :const_path_ref, :class, :module, :if, :unless, :elsif, :ifop, :if_mod, :unless_mod, :binary, :alias,
+         :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal, :massign, :var_field
       self[1].line_number
     when :assoclist_from_args, :bare_assoc_hash
       self[1][0].line_number
@@ -68,45 +68,16 @@ class Sexp
     to_s = options[:to_s]
     self.recursive_children do |child|
       if (
-         !sexp_type ||
+           !sexp_type || (sexp_type.is_a?(Array) ? sexp_type.include?(child.sexp_type) : sexp_type == child.sexp_type)
+         ) &&
            (
-             if sexp_type.is_a?(Array)
-               sexp_type.include?(child.sexp_type)
-             else
-               sexp_type == child.sexp_type
-             end
-           )
-       ) &&
-         (
-           !receiver ||
-             (
-               if receiver.is_a?(Array)
-                 receiver.include?(child.receiver.to_s)
-               else
-                 receiver == child.receiver.to_s
-               end
-             )
-         ) &&
-         (
-           !message ||
-             (
-               if message.is_a?(Array)
-                 message.include?(child.message.to_s)
-               else
-                 message == child.message.to_s
-               end
-             )
-         ) &&
-         (
-           !to_s ||
-             (
-               if to_s.is_a?(Array)
-                 to_s.include?(child.to_s)
-               else
-                 to_s == child.to_s
-               end
-             )
-         )
+             !receiver ||
+               (receiver.is_a?(Array) ? receiver.include?(child.receiver.to_s) : receiver == child.receiver.to_s)
+           ) &&
+           (
+             !message || (message.is_a?(Array) ? message.include?(child.message.to_s) : message == child.message.to_s)
+           ) &&
+           (!to_s || (to_s.is_a?(Array) ? to_s.include?(child.to_s) : to_s == child.to_s))
         yield child
       end
     end
@@ -391,14 +362,12 @@ class Sexp
   def all_conditions
     nodes = []
     if :binary == sexp_type && %w[&& || and or].include?(self[2].to_s)
-      if :binary == self[1].sexp_type &&
-         %w[&& || and or].include?(self[1][2].to_s)
+      if :binary == self[1].sexp_type && %w[&& || and or].include?(self[1][2].to_s)
         nodes += self[1].all_conditions
       else
         nodes << self[1]
       end
-      if :binary == self[3].sexp_type &&
-         %w[&& || and or].include?(self[3][2].to_s)
+      if :binary == self[3].sexp_type && %w[&& || and or].include?(self[3][2].to_s)
         nodes += self[3].all_conditions
       else
         nodes << self[3]
@@ -418,6 +387,7 @@ class Sexp
   #         => s(:@ident, "show", s(1, 4)),
   #
   # @return [Sexp] method name node
+
   def method_name
     case sexp_type
     when :def
@@ -455,6 +425,7 @@ class Sexp
   #            )
   #
   # @return [Sexp] body node
+
   def body
     case sexp_type
     when :else
@@ -621,11 +592,8 @@ class Sexp
       else
 
       end
-    if pair_nodes
-      pair_nodes.size.times do |i|
-        return pair_nodes[i][2] if key == pair_nodes[i][1].to_s
-      end
-    end
+
+    pair_nodes.size.times { |i| return pair_nodes[i][2] if key == pair_nodes[i][1].to_s } if pair_nodes
     CodeAnalyzer::Nil.new
   end
 
@@ -734,12 +702,9 @@ class Sexp
       if first_node
         while true
           array_size += 1
-          first_node =
-            s(:args_new) == first_node[1] ? first_node[2] : first_node[1]
+          first_node = s(:args_new) == first_node[1] ? first_node[2] : first_node[1]
           if :args_add != first_node.sexp_type
-            if :array == first_node.sexp_type
-              array_size += first_node.array_size
-            end
+            array_size += first_node.array_size if :array == first_node.sexp_type
             break
           end
         end
@@ -765,13 +730,9 @@ class Sexp
   def array_values
     case sexp_type
     when :array
-      if nil == self[1] ||
-         %i[words_new qwords_new symbols_new qsymbols_new].include?(
-           self[1].sexp_type
-         )
+      if nil == self[1] || %i[words_new qwords_new symbols_new qsymbols_new].include?(self[1].sexp_type)
         []
-      elsif %i[words_add qwords_add symbols_add qsymbols_add].include? self[1]
-                                                                    .sexp_type
+      elsif %i[words_add qwords_add symbols_add qsymbols_add].include? self[1].sexp_type
         self[1].array_values
       else
         arguments.all
@@ -780,12 +741,10 @@ class Sexp
       values = []
       node = self
       while true
-        if %i[words_add qwords_add symbols_add qsymbols_add].include? node
-                                                                   .sexp_type
+        if %i[words_add qwords_add symbols_add qsymbols_add].include? node.sexp_type
           values.unshift node[2]
           node = node[1]
-        elsif %i[words_new qwords_new symbols_new qsymbols_new].include? node
-                                                                      .sexp_type
+        elsif %i[words_new qwords_new symbols_new qsymbols_new].include? node.sexp_type
           break
         end
       end
@@ -842,9 +801,8 @@ class Sexp
   # @return [String] to_s
   def to_s
     case sexp_type
-    when :string_literal, :xstring_literal, :string_content, :const_ref,
-         :symbol_literal, :symbol, :args_add_block, :var_ref, :vcall, :var_field,
-         :@ident, :@tstring_content, :@const, :@ivar, :@kw, :@gvar, :@cvar, :@period
+    when :string_literal, :xstring_literal, :string_content, :const_ref, :symbol_literal, :symbol, :args_add_block, :var_ref,
+         :vcall, :var_field, :@ident, :@tstring_content, :@const, :@ivar, :@kw, :@gvar, :@cvar, :@period
       self[1].to_s
     when :string_add
       s(:string_content) == self[1] ? self[2].to_s : self[1].to_s
@@ -871,11 +829,7 @@ class Sexp
 
   # check if the self node is a const.
   def const?
-    :@const == self.sexp_type ||
-      (
-        %i[var_ref vcall].include?(self.sexp_type) &&
-          :@const == self[1].sexp_type
-      )
+    :@const == self.sexp_type || (%i[var_ref vcall].include?(self.sexp_type) && :@const == self[1].sexp_type)
   end
 
   # true
@@ -892,14 +846,10 @@ class Sexp
   def remove_line_and_column
     node = self.clone
     last_node = node.last
-    if Sexp === last_node && last_node.size == 2 &&
-       last_node.first.is_a?(Integer) &&
-       last_node.last.is_a?(Integer)
+    if Sexp === last_node && last_node.size == 2 && last_node.first.is_a?(Integer) && last_node.last.is_a?(Integer)
       node.delete_at(-1)
     end
-    node.sexp_body.each_with_index do |child, index|
-      node[index + 1] = child.remove_line_and_column if Sexp === child
-    end
+    node.sexp_body.each_with_index { |child, index| node[index + 1] = child.remove_line_and_column if Sexp === child }
     node
   end
 
@@ -922,9 +872,7 @@ class Sexp
     class_eval <<-EOS
       alias_method :origin_#{method}, :#{method}
 
-      def #{
-      method
-    }
+      def #{method}
         ret = origin_#{
       method
     }
