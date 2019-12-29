@@ -1,4 +1,6 @@
 # encoding: utf-8
+# frozen_string_literal: true
+
 module CodeAnalyzer::CheckingVisitor
   # This is the checking visitor to check ruby plain code.
   class Plain < Base
