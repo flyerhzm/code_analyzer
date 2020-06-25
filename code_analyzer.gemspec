@@ -6,8 +6,8 @@ require File.expand_path('../lib/code_analyzer/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Richard Huang"]
   gem.email         = ["flyerhzm@gmail.com"]
-  gem.description   = %q{a code analyzer tool which extracted from rails_best_practices, it helps you easily build your own code analyzer tool.}
-  gem.summary       = %q{a code analyzer helps you build your own code analyzer tool.}
+  gem.description   = 'a code analyzer tool which extracted from rails_best_practices, it helps you easily build your own code analyzer tool.'
+  gem.summary       = 'a code analyzer helps you build your own code analyzer tool.'
   gem.homepage      = "https://github.com/flyerhzm/code_analyzer"
   gem.license       = 'MIT'
 
