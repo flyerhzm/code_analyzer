@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # frozen_string_literal: true
 
 require File.expand_path('../lib/code_analyzer/version', __FILE__)
