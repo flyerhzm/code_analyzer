@@ -78,8 +78,7 @@ class Sexp
            ) &&
            (
              !message || (message.is_a?(Array) ? message.include?(child.message.to_s) : message == child.message.to_s)
-           ) &&
-           (!to_s || (to_s.is_a?(Array) ? to_s.include?(child.to_s) : to_s == child.to_s))
+           ) && (!to_s || (to_s.is_a?(Array) ? to_s.include?(child.to_s) : to_s == child.to_s))
         yield child
       end
     end
@@ -702,10 +701,12 @@ class Sexp
     if :array == sexp_type
       first_node = self[1]
       array_size = 0
+
       if first_node
         while true
           array_size += 1
           first_node = s(:args_new) == first_node[1] ? first_node[2] : first_node[1]
+
           if :args_add != first_node.sexp_type
             array_size += first_node.array_size if :array == first_node.sexp_type
             break
@@ -876,9 +877,7 @@ class Sexp
       alias_method :origin_#{method}, :#{method}
 
       def #{method}
-        ret = origin_#{
-      method
-    }
+        ret = origin_#{method}
         ret.nil? ? CodeAnalyzer::Nil.new : ret
       end
     EOS
