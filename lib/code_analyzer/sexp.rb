@@ -24,7 +24,7 @@ class Sexp
       self[1].line_number
     when :assoclist_from_args, :bare_assoc_hash
       self[1][0].line_number
-    when :string_add, :opassign
+    when :string_add, :opassign, :unary
       self[2].line_number
     when :array
       array_values.first.line_number

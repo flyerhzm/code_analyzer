@@ -20,7 +20,7 @@ describe Sexp do
         end
         def condition
           if success?
-            puts "unknown" if output?
+            puts "unknown" if !output?
           elsif fail?
           end
         end
@@ -71,6 +71,10 @@ describe Sexp do
 
     it 'should return if_mod line' do
       expect(@node.grep_node(sexp_type: :if_mod).line_number).to eq 15
+    end
+
+    it 'should return unary line' do
+      expect(@node.grep_node(sexp_type: :unary).line_number).to eq 15
     end
   end
 
