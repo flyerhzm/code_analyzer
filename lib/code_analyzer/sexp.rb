@@ -20,16 +20,18 @@ class Sexp
     case sexp_type
     when :def, :defs, :command, :command_call, :call, :fcall, :method_add_arg, :method_add_block, :var_ref, :vcall,
          :const_ref, :const_path_ref, :class, :module, :if, :unless, :elsif, :ifop, :if_mod, :unless_mod, :binary, :alias,
-         :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal, :massign, :var_field
+         :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal, :massign, :var_field, :assign, :paren
       self[1].line_number
     when :assoclist_from_args, :bare_assoc_hash
       self[1][0].line_number
-    when :string_add, :opassign, :unary
+    when :string_add, :opassign, :unary, :stmts_add
       self[2].line_number
     when :array
       array_values.first.line_number
     when :mlhs_add
       self.last.line_number
+    when :params
+      self[1][0].line_number if self[1].is_a? Array
     else
       self.last.first if self.last.is_a? Array
     end
