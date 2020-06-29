@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Sexp do
-  describe 'line' do
+  describe 'line_number' do
     before :each do
       content = <<-EOF
       class Demo
@@ -75,6 +75,67 @@ describe Sexp do
 
     it 'should return unary line' do
       expect(@node.grep_node(sexp_type: :unary).line_number).to eq 15
+    end
+
+    it 'should return assign line' do
+      expect(@node.grep_node(sexp_type: :assign).line_number).to eq 6
+    end
+
+    it 'should return paren line' do
+      expect(@node.grep_node(sexp_type: :paren).line_number).to eq 10
+    end
+
+    it 'should return params line' do
+      expect(@node.grep_node(sexp_type: :params).line_number).to be_nil
+    end
+
+    it 'should return params line if not empty' do
+      @node = parse_content(<<~CODE)
+        # @see Foo
+        def foo(a, b)
+        end
+      CODE
+      expect(@node.grep_node(sexp_type: :params).line_number).to eq 2
+    end
+
+    it 'should return stmts_add line' do
+      expect(@node.grep_node(sexp_type: :stmts_add).line_number).to eq 13
+    end
+
+    context 'when a complex code is given' do
+      before :each do
+        @node = parse_content(<<~CODE)
+          def foo(num)
+            unless (num == 0 ? :zero, :other) || !@opts.right?
+              @bar = {}
+            end
+          end
+        CODE
+      end
+
+      it 'should return unless line' do
+        expect(@node.grep_node(sexp_type: :unless).line_number).to eq 2
+      end
+
+      it 'should return paren line' do
+        expect(@node.grep_node(sexp_type: :paren).line_number).to eq 1
+      end
+
+      it 'should return stmts_add line' do
+        expect(@node.grep_node(sexp_type: :stmts_add).line_number).to eq 2
+      end
+
+      it 'should return binary line' do
+        expect(@node.grep_node(sexp_type: :binary).line_number).to eq 2
+      end
+
+      it 'should return unary line' do
+        expect(@node.grep_node(sexp_type: :unary).line_number).to eq 2
+      end
+
+      it 'should return assign line' do
+        expect(@node.grep_node(sexp_type: :assign).line_number).to eq 3
+      end
     end
   end
 
