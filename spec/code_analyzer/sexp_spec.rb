@@ -22,7 +22,10 @@ describe Sexp do
           if success?
             puts "unknown" if !output?
           elsif fail?
+            1..2
+            3...4
           end
+          pp ::Rails.application
         end
       end
       EOF
@@ -39,6 +42,10 @@ describe Sexp do
 
     it 'should return const line' do
       expect(@node.grep_node(sexp_type: :const_ref).line_number).to eq 1
+    end
+
+    it 'should return top const line' do
+      expect(@node.grep_node(sexp_type: :top_const_ref).line_number).to eq 20
     end
 
     it 'should return const path line' do
@@ -83,6 +90,14 @@ describe Sexp do
 
     it 'should return paren line' do
       expect(@node.grep_node(sexp_type: :paren).line_number).to eq 10
+    end
+
+    it 'should return dot2 line' do
+      expect(@node.grep_node(sexp_type: :dot2).line_number).to eq 17
+    end
+
+    it 'should return dot3 line' do
+      expect(@node.grep_node(sexp_type: :dot3).line_number).to eq 18
     end
 
     it 'should return params line' do
