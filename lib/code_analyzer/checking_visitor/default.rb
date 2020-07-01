@@ -40,7 +40,7 @@ module CodeAnalyzer::CheckingVisitor
     def parse(filename, content)
       Sexp.from_array(Ripper::SexpBuilder.new(content).parse)
     rescue Exception
-      raise AnalyzerException.new("#{filename} looks like it's not a valid Ruby file.  Skipping...")
+      raise AnalyzerException, "#{filename} looks like it's not a valid Ruby file.  Skipping..."
     end
 
     # recursively check ruby sexp node.
