@@ -29,7 +29,7 @@ module CodeAnalyzer
     end
 
     # return self.
-    def method_missing(method_sym, *arguments, &block)
+    def method_missing(_method_sym, *_arguments)
       self
     end
   end
