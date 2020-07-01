@@ -18,8 +18,9 @@ class Sexp
   def line_number
     case sexp_type
     when :def, :defs, :command, :command_call, :call, :fcall, :method_add_arg, :method_add_block, :var_ref, :vcall,
-         :const_ref, :top_const_ref, :const_path_ref, :class, :module, :if, :unless, :elsif, :ifop, :if_mod, :unless_mod, :binary, :alias,
-         :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal, :massign, :var_field, :assign, :paren, :dot2, :dot3
+         :const_ref, :top_const_ref, :const_path_ref, :class, :module, :if, :unless, :elsif, :ifop, :if_mod, :unless_mod,
+         :binary, :alias, :symbol_literal, :symbol, :aref, :hash, :assoc_new, :string_literal, :massign, :var_field, :assign,
+         :paren, :dot2, :dot3
       self[1].line_number
     when :assoclist_from_args, :bare_assoc_hash
       self[1][0].line_number
@@ -79,8 +80,7 @@ class Sexp
            ) &&
            (
              !message || (message.is_a?(Array) ? message.include?(child.message.to_s) : message == child.message.to_s)
-           ) &&
-           (!to_s || (to_s.is_a?(Array) ? to_s.include?(child.to_s) : to_s == child.to_s))
+           ) && (!to_s || (to_s.is_a?(Array) ? to_s.include?(child.to_s) : to_s == child.to_s))
         yield child
       end
     end
@@ -703,10 +703,12 @@ class Sexp
     if :array == sexp_type
       first_node = self[1]
       array_size = 0
+
       if first_node
         while true
           array_size += 1
           first_node = s(:args_new) == first_node[1] ? first_node[2] : first_node[1]
+
           if :args_add != first_node.sexp_type
             array_size += first_node.array_size if :array == first_node.sexp_type
             break
@@ -877,9 +879,7 @@ class Sexp
       alias_method :origin_#{method}, :#{method}
 
       def #{method}
-        ret = origin_#{
-      method
-    }
+        ret = origin_#{method}
         ret.nil? ? CodeAnalyzer::Nil.new : ret
       end
     EOS
