@@ -44,10 +44,10 @@ class Sexp
   end
 
   # recursively find all child nodes, and yeild each child node.
-  def recursive_children
+  def recursive_children(&block)
     children.each do |child|
       yield child
-      child.recursive_children { |c| yield c }
+      child.recursive_children(&block)
     end
   end
 
