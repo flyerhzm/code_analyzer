@@ -28,11 +28,11 @@ class Sexp
     when :array
       array_values.first.line_number
     when :mlhs_add
-      self.last.line_number
+      last.line_number
     when :params
       self[1][0].line_number if self[1].is_a? Array
     else
-      self.last.first if self.last.is_a? Array
+      last.first if last.is_a? Array
     end
   end
 
@@ -69,7 +69,7 @@ class Sexp
     receiver = options[:receiver]
     message = options[:message]
     to_s = options[:to_s]
-    self.recursive_children do |child|
+    recursive_children do |child|
       if (
            !sexp_type || (sexp_type.is_a?(Array) ? sexp_type.include?(child.sexp_type) : sexp_type == child.sexp_type)
          ) &&
@@ -845,7 +845,7 @@ class Sexp
     when :aref
       "#{self[1]}[#{self[2]}]"
     when :call, :field
-      "#{self.receiver}.#{self.message}"
+      "#{receiver}.#{message}"
     when :top_const_ref
       "::#{self[1]}"
     else
@@ -855,7 +855,7 @@ class Sexp
 
   # check if the self node is a const.
   def const?
-    :@const == self.sexp_type || (%i[var_ref vcall].include?(self.sexp_type) && :@const == self[1].sexp_type)
+    :@const == sexp_type || (%i[var_ref vcall].include?(sexp_type) && :@const == self[1].sexp_type)
   end
 
   # true
@@ -870,7 +870,7 @@ class Sexp
 
   # remove the line and column info from sexp.
   def remove_line_and_column
-    node = self.clone
+    node = clone
     last_node = node.last
     if Sexp === last_node && last_node.size == 2 && last_node.first.is_a?(Integer) && last_node.last.is_a?(Integer)
       node.delete_at(-1)
