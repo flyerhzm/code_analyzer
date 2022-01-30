@@ -29,7 +29,7 @@ module CodeAnalyzer
     # @param [Sexp] node
     def node_start(node)
       @node = node
-      self.class.get_callbacks("start_#{node.sexp_type}".to_sym).each { |block| self.instance_exec(node, &block) }
+      self.class.get_callbacks("start_#{node.sexp_type}".to_sym).each { |block| instance_exec(node, &block) }
     end
 
     # delegate to end_### according to the sexp_type, like
@@ -40,7 +40,7 @@ module CodeAnalyzer
     # @param [Sexp] node
     def node_end(node)
       @node = node
-      self.class.get_callbacks("end_#{node.sexp_type}".to_sym).each { |block| self.instance_exec(node, &block) }
+      self.class.get_callbacks("end_#{node.sexp_type}".to_sym).each { |block| instance_exec(node, &block) }
     end
 
     # add an warning.
