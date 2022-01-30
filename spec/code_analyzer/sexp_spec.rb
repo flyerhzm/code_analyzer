@@ -663,12 +663,14 @@ describe Sexp do
       expect(node.value).to eq 'Richard'
     end
 
-    it 'should get value for assoc_new' do
-      node =
-        parse_content("add_user :user, first_name:").grep_node(
-          sexp_type: :assoc_new
-        )
-      expect(node.value).to be_nil
+    if RUBY_VERSION.to_f >= 3.1
+      it 'should get value for assoc_new' do
+        node =
+          parse_content("add_user :user, first_name:").grep_node(
+            sexp_type: :assoc_new
+          )
+        expect(node.value).to be_nil
+      end
     end
 
     it 'should get array value for assoc_new' do
