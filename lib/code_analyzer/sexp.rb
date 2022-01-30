@@ -688,6 +688,28 @@ class Sexp
     end
   end
 
+  # Get the hash key
+  #
+  #     s(:assoc_new, s(:@label, "first_name:", s(1, 1)), s(:string_literal, s(:string_add, s(:string_content), s(:@tstring_content, "Richard", s(1, 14)))))
+  #     =>
+  #     s(:@label, "first_name:", s(1, 1))
+  def key
+    if :assoc_new == sexp_type
+      self[1].to_s
+    end
+  end
+
+  # Get the hash value
+  #
+  #     s(:assoc_new, s(:@label, "first_name:", s(1, 1)), s(:string_literal, s(:string_add, s(:string_content), s(:@tstring_content, "Richard", s(1, 14)))))
+  #     =>
+  #     s(:string_literal, s(:string_add, s(:string_content), s(:@tstring_content, "Richard", s(1, 14))))
+  def value
+    if :assoc_new == sexp_type
+      self[2].to_s
+    end
+  end
+
   # Get the array size.
   #
   #     s(:array,

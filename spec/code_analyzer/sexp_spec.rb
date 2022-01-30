@@ -644,6 +644,26 @@ describe Sexp do
     end
   end
 
+  describe 'key' do
+    it 'should get key for assoc_new' do
+      node =
+        parse_content("add_user :user, first_name: 'Richard'").grep_node(
+          sexp_type: :assoc_new
+        )
+      expect(node.key).to eq 'first_name'
+    end
+  end
+
+  describe 'value' do
+    it 'should get value for assoc_new' do
+      node =
+        parse_content("add_user :user, first_name: 'Richard'").grep_node(
+          sexp_type: :assoc_new
+        )
+      expect(node.value).to eq 'Richard'
+    end
+  end
+
   describe 'array_size' do
     it 'should get array size' do
       node = parse_content("['first_name', 'last_name']").grep_node(sexp_type: :array)
