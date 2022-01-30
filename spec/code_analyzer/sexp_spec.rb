@@ -662,6 +662,14 @@ describe Sexp do
         )
       expect(node.value).to eq 'Richard'
     end
+
+    it 'should get array value for assoc_new' do
+      node =
+        parse_content("add_user :user, name: %w[Richard Huang]").grep_node(
+          sexp_type: :assoc_new
+        )
+      expect(node.value.array_values.map(&:to_s)).to eq ['Richard', 'Huang']
+    end
   end
 
   describe 'array_size' do

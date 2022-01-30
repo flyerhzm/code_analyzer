@@ -706,6 +706,8 @@ class Sexp
   #     s(:string_literal, s(:string_add, s(:string_content), s(:@tstring_content, "Richard", s(1, 14))))
   def value
     if :assoc_new == sexp_type
+      return self[2] if :array == self[2].sexp_type
+
       self[2].to_s
     end
   end
