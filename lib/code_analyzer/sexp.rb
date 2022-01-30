@@ -895,7 +895,7 @@ class Sexp
     left_value
     right_value
   ].each do |method|
-    class_eval <<-EOS
+    class_eval <<-EOS, __FILE__, __LINE__ + 1
       alias_method :origin_#{method}, :#{method}
 
       def #{method}
