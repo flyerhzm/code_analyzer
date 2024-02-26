@@ -113,7 +113,7 @@ class Sexp
   # @return [Integer] the count of metch nodes
   def grep_nodes_count(options)
     count = 0
-    grep_nodes(options) { |node| count += 1 }
+    grep_nodes(options) { |_node| count += 1 }
     count
   end
 
