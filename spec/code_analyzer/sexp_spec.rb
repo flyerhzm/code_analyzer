@@ -105,7 +105,8 @@ describe Sexp do
     end
 
     it 'should return params line if not empty' do
-      @node = parse_content(<<~CODE)
+      @node =
+        parse_content(<<~CODE)
         # @see Foo
         def foo(a, b)
         end
@@ -119,7 +120,8 @@ describe Sexp do
 
     context 'when a complex code is given' do
       before :each do
-        @node = parse_content(<<~CODE)
+        @node =
+          parse_content(<<~CODE)
           def foo(num)
             unless (num == 0 ? :zero, :other) || !@opts.right?
               @bar = {}
