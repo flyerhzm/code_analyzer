@@ -42,21 +42,21 @@ module CodeAnalyzer
 
     context 'callback' do
       it 'should add callback to start_call' do
-        block = Proc.new {}
+        block = proc {}
         Checker.add_callback(:start_call, &block)
         expect(Checker.get_callbacks(:start_call)).to eq [block]
       end
 
       it 'should add callback to both start_class and end_class' do
-        block = Proc.new {}
+        block = proc {}
         Checker.add_callback(:start_class, :end_class, &block)
         expect(Checker.get_callbacks(:start_class)).to eq [block]
         expect(Checker.get_callbacks(:end_class)).to eq [block]
       end
 
       it 'should add multiple callbacks to end_call' do
-        block1 = Proc.new {}
-        block2 = Proc.new {}
+        block1 = proc {}
+        block2 = proc {}
         Checker.add_callback(:end_call, &block1)
         Checker.add_callback(:end_call, &block2)
         expect(Checker.get_callbacks(:end_call)).to eq [block1, block2]
