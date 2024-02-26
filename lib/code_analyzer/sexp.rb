@@ -304,7 +304,7 @@ class Sexp
         nodes << self[2]
       else
         node = self[1]
-        while true
+        loop do
           if %i[args_add args_add_star].include? node.sexp_type
             nodes.unshift node[2]
             node = node[1]
@@ -517,7 +517,7 @@ class Sexp
 
       end
     if node
-      while true
+      loop do
         if :stmts_add == node.sexp_type && s(:void_stmt) != node[2]
           stmts.unshift node[2]
           node = node[1]
@@ -729,7 +729,7 @@ class Sexp
       first_node = self[1]
       array_size = 0
       if first_node
-        while true
+        loop do
           array_size += 1
           first_node = s(:args_new) == first_node[1] ? first_node[2] : first_node[1]
           if :args_add != first_node.sexp_type
@@ -769,7 +769,7 @@ class Sexp
     when :words_add, :qwords_add, :symbols_add, :qsymbols_add
       values = []
       node = self
-      while true
+      loop do
         if %i[words_add qwords_add symbols_add qsymbols_add].include? node.sexp_type
           values.unshift node[2]
           node = node[1]
